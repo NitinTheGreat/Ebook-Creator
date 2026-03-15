@@ -7,17 +7,8 @@ export interface Chapter {
   order: number;
 }
 
-export type PageSize = "A4" | "A5" | "6x9";
+export type PageSize = "A4" | "6x9";
 export type ThemeMode = "light" | "sepia" | "dark";
-
-export interface PageDimensions {
-  width: number; // in points (1pt = 1/72 inch)
-  height: number;
-  marginTop: number;
-  marginBottom: number;
-  marginLeft: number;
-  marginRight: number;
-}
 
 export interface BookSettings {
   pageSize: PageSize;
@@ -25,11 +16,13 @@ export interface BookSettings {
   fontSize: number;
   lineHeight: number;
   theme: ThemeMode;
+  columnCount: 1 | 2;
+  columnGap: number;
   margins: {
     top: number;
     bottom: number;
-    left: number;
-    right: number;
+    inner: number;
+    outer: number;
   };
 }
 
@@ -44,27 +37,46 @@ export interface Book {
   updatedAt: string;
 }
 
-export const PAGE_SIZES: Record<PageSize, { width: number; height: number; label: string }> = {
-  A4: { width: 595, height: 842, label: "A4 (210 × 297mm)" },
-  A5: { width: 420, height: 595, label: "A5 (148 × 210mm)" },
-  "6x9": { width: 432, height: 648, label: '6" × 9" (Trade)' },
+export const PAGE_SIZES: Record<
+  PageSize,
+  { width: number; height: number; label: string; cssWidth: string; cssHeight: string }
+> = {
+  A4: {
+    width: 210,
+    height: 297,
+    label: "A4 (210 × 297 mm)",
+    cssWidth: "210mm",
+    cssHeight: "297mm",
+  },
+  "6x9": {
+    width: 152.4,
+    height: 228.6,
+    label: '6" × 9" (Trade)',
+    cssWidth: "6in",
+    cssHeight: "9in",
+  },
 };
 
 export const DEFAULT_SETTINGS: BookSettings = {
   pageSize: "6x9",
-  fontFamily: "Georgia",
-  fontSize: 12,
-  lineHeight: 1.6,
+  fontFamily: "Source Serif 4",
+  fontSize: 11,
+  lineHeight: 1.45,
   theme: "light",
-  margins: { top: 72, bottom: 72, left: 72, right: 72 },
+  columnCount: 2,
+  columnGap: 26,
+  margins: {
+    top: 72,    // 1 inch
+    bottom: 72, // 1 inch
+    inner: 90,  // 1.25 inch
+    outer: 54,  // 0.75 inch
+  },
 };
 
 export const FONT_OPTIONS = [
-  { value: "Georgia", label: "Georgia (Serif)" },
+  { value: "Source Serif 4", label: "Source Serif 4" },
+  { value: "Georgia", label: "Georgia" },
   { value: "Times New Roman", label: "Times New Roman" },
-  { value: "Garamond", label: "Garamond" },
   { value: "Palatino", label: "Palatino" },
-  { value: "Merriweather", label: "Merriweather" },
-  { value: "Inter", label: "Inter (Sans)" },
-  { value: "Roboto", label: "Roboto (Sans)" },
+  { value: "Garamond", label: "Garamond" },
 ];

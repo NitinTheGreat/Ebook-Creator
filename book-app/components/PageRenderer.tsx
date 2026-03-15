@@ -1,81 +1,82 @@
 "use client";
 
 import React from "react";
-import { PAGE_SIZES, BookSettings, ThemeMode } from "@/types";
-
-const THEME_STYLES: Record<ThemeMode, { bg: string; text: string; headerText: string }> = {
-  light: { bg: "#FFFFFF", text: "#1a1a1a", headerText: "#666666" },
-  sepia: { bg: "#F5F0E8", text: "#2c2416", headerText: "#8a7f6e" },
-  dark: { bg: "#1e1e1e", text: "#d4d4d4", headerText: "#666666" },
-};
+import { PAGE_SIZES, BookSettings } from "@/types";
 
 export default function PageRenderer({
   pageNumber,
   bookTitle,
+  chapterTitle,
   settings,
   children,
   isTitle = false,
 }: {
   pageNumber?: number;
   bookTitle: string;
+  chapterTitle?: string;
   settings: BookSettings;
   children: React.ReactNode;
   isTitle?: boolean;
 }) {
   const dims = PAGE_SIZES[settings.pageSize];
-  const theme = THEME_STYLES[settings.theme];
-  const scale = 0.75; // scale down for preview
+  const scale = 0.7;
+  const widthPx = dims.width * 3.78 * scale;   // mm to px at 96dpi approx
+  const heightPx = dims.height * 3.78 * scale;
+  const isEvenPage = pageNumber ? pageNumber % 2 === 0 : false;
+
+  // Inner/outer margin mapping
+  const marginLeft = isEvenPage ? settings.margins.outer : settings.margins.inner;
+  const marginRight = isEvenPage ? settings.margins.inner : settings.margins.outer;
 
   return (
     <div
-      className="relative shadow-2xl shadow-black/40 mx-auto shrink-0"
+      className="book-page"
       style={{
-        width: dims.width * scale,
-        height: dims.height * scale,
-        backgroundColor: theme.bg,
-        color: theme.text,
-        fontFamily: settings.fontFamily,
-        fontSize: settings.fontSize * scale,
-        lineHeight: settings.lineHeight,
-        borderRadius: 4,
-        overflow: "hidden",
+        width: widthPx,
+        height: heightPx,
+        borderRadius: 3,
       }}
     >
-      {/* Running Header */}
-      {!isTitle && pageNumber && pageNumber > 1 && (
+      {/* Running header */}
+      {!isTitle && pageNumber && pageNumber > 2 && (
         <div
-          className="absolute top-0 left-0 right-0 text-center text-[10px] tracking-widest uppercase"
+          className="book-header"
           style={{
-            color: theme.headerText,
-            paddingTop: settings.margins.top * scale * 0.3,
-            fontSize: 8 * scale,
+            paddingTop: settings.margins.top * scale * 0.35,
+            paddingLeft: marginLeft * scale,
+            paddingRight: marginRight * scale,
+            textAlign: isEvenPage ? "left" : "right",
           }}
         >
-          {bookTitle}
+          {isEvenPage ? chapterTitle || bookTitle : bookTitle}
         </div>
       )}
 
-      {/* Content Area */}
+      {/* Content area */}
       <div
-        className="absolute overflow-hidden"
+        className={`book-page-content ${settings.columnCount === 2 && !isTitle ? "two-column" : ""}`}
         style={{
+          position: "absolute",
           top: settings.margins.top * scale,
-          left: settings.margins.left * scale,
-          right: settings.margins.right * scale,
           bottom: settings.margins.bottom * scale,
+          left: marginLeft * scale,
+          right: marginRight * scale,
+          fontSize: settings.fontSize * scale,
+          lineHeight: settings.lineHeight,
+          fontFamily: `"${settings.fontFamily}", Georgia, serif`,
+          columnGap: settings.columnGap * scale,
+          overflow: "hidden",
         }}
       >
         {children}
       </div>
 
-      {/* Footer with page number */}
+      {/* Footer page number */}
       {!isTitle && pageNumber && (
         <div
-          className="absolute bottom-0 left-0 right-0 text-center"
+          className="book-footer"
           style={{
-            color: theme.headerText,
-            paddingBottom: settings.margins.bottom * scale * 0.3,
-            fontSize: 9 * scale,
+            paddingBottom: settings.margins.bottom * scale * 0.35,
           }}
         >
           {pageNumber}

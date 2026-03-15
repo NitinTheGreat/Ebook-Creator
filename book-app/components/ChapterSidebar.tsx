@@ -31,12 +31,14 @@ import { Chapter } from "@/types";
 
 function SortableChapterItem({
   chapter,
+  chapterNumber,
   isActive,
   onSelect,
   onRename,
   onDelete,
 }: {
   chapter: Chapter;
+  chapterNumber: number;
   isActive: boolean;
   onSelect: () => void;
   onRename: (title: string) => void;
@@ -96,7 +98,10 @@ function SortableChapterItem({
           onClick={(e) => e.stopPropagation()}
         />
       ) : (
-        <span className="flex-1 truncate">{chapter.title}</span>
+        <div className="flex-1 truncate">
+          <span className="text-zinc-600 text-xs mr-1.5">Ch. {chapterNumber}</span>
+          <span>{chapter.title}</span>
+        </div>
       )}
       <button
         className="opacity-0 group-hover:opacity-100 text-zinc-600 hover:text-red-400 transition-opacity shrink-0"
@@ -112,8 +117,16 @@ function SortableChapterItem({
 }
 
 export default function ChapterSidebar() {
-  const { book, activeChapterId, setActiveChapter, addChapter, deleteChapter, renameChapter, reorderChapters, setTitle } =
-    useBookStore();
+  const {
+    book,
+    activeChapterId,
+    setActiveChapter,
+    addChapter,
+    deleteChapter,
+    renameChapter,
+    reorderChapters,
+    setTitle,
+  } = useBookStore();
   const [titleEditing, setTitleEditing] = useState(false);
   const [titleValue, setTitleValue] = useState(book.title);
   const [collapsed, setCollapsed] = useState(false);
@@ -131,6 +144,8 @@ export default function ChapterSidebar() {
       reorderChapters(arrayMove(book.chapters, oldIndex, newIndex));
     }
   };
+
+  const sortedChapters = [...book.chapters].sort((a, b) => a.order - b.order);
 
   return (
     <aside className="w-64 shrink-0 bg-zinc-900/80 backdrop-blur-xl border-r border-zinc-800/80 flex flex-col h-full">
@@ -168,7 +183,7 @@ export default function ChapterSidebar() {
             </h2>
           )}
         </div>
-        <p className="text-xs text-zinc-500 pl-6">Double-click to rename</p>
+        <p className="text-[10px] text-zinc-600 pl-6">Double-click to rename</p>
       </div>
 
       {/* Chapters Header */}
@@ -193,26 +208,25 @@ export default function ChapterSidebar() {
       {!collapsed && (
         <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-0.5 scrollbar-thin">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={book.chapters.map((c) => c.id)} strategy={verticalListSortingStrategy}>
-              {book.chapters
-                .sort((a, b) => a.order - b.order)
-                .map((chapter) => (
-                  <SortableChapterItem
-                    key={chapter.id}
-                    chapter={chapter}
-                    isActive={activeChapterId === chapter.id}
-                    onSelect={() => setActiveChapter(chapter.id)}
-                    onRename={(title) => renameChapter(chapter.id, title)}
-                    onDelete={() => deleteChapter(chapter.id)}
-                  />
-                ))}
+            <SortableContext items={sortedChapters.map((c) => c.id)} strategy={verticalListSortingStrategy}>
+              {sortedChapters.map((chapter, i) => (
+                <SortableChapterItem
+                  key={chapter.id}
+                  chapter={chapter}
+                  chapterNumber={i + 1}
+                  isActive={activeChapterId === chapter.id}
+                  onSelect={() => setActiveChapter(chapter.id)}
+                  onRename={(title) => renameChapter(chapter.id, title)}
+                  onDelete={() => deleteChapter(chapter.id)}
+                />
+              ))}
             </SortableContext>
           </DndContext>
         </div>
       )}
 
       {/* Footer */}
-      <div className="p-3 border-t border-zinc-800/80 text-xs text-zinc-600 text-center">
+      <div className="p-3 border-t border-zinc-800/80 text-[10px] text-zinc-600 text-center">
         Auto-saved to browser
       </div>
     </aside>

@@ -43,7 +43,7 @@ export default function Home() {
       <header className="h-13 shrink-0 bg-zinc-900/90 backdrop-blur-xl border-b border-zinc-800/80 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
               <BookOpen size={14} className="text-white" />
             </div>
             <h1 className="text-sm font-bold text-zinc-100 tracking-tight">
@@ -53,6 +53,9 @@ export default function Home() {
           <div className="w-px h-5 bg-zinc-700/60" />
           <span className="text-xs text-zinc-500 truncate max-w-[200px]">
             {book.title}
+          </span>
+          <span className="text-[10px] text-zinc-700 bg-zinc-800 px-2 py-0.5 rounded-full">
+            {book.chapters.length} chapter{book.chapters.length !== 1 ? "s" : ""}
           </span>
         </div>
 

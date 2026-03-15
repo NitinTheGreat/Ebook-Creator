@@ -36,19 +36,52 @@ const createDefaultBook = (): Book => {
   const firstChapterId = uuidv4();
   return {
     id: uuidv4(),
-    title: "My Ebook",
+    title: "Software Engineering",
     author: "Author Name",
-    subtitle: "",
+    subtitle: "Principles and Practice",
     chapters: [
       {
         id: firstChapterId,
-        title: "Chapter 1",
+        title: "Introduction",
         content: {
           type: "doc",
           content: [
             {
+              type: "heading",
+              attrs: { level: 2 },
+              content: [{ type: "text", text: "1.1 What is Software Engineering?" }],
+            },
+            {
               type: "paragraph",
-              content: [{ type: "text", text: "Start writing your chapter here..." }],
+              content: [
+                {
+                  type: "text",
+                  text: "Software engineering is a systematic, disciplined, and quantifiable approach to the development, operation, and maintenance of software. It encompasses a collection of concepts, methodologies, and tools that enable professionals to build high-quality software systems within time and budget constraints.",
+                },
+              ],
+            },
+            {
+              type: "paragraph",
+              content: [
+                {
+                  type: "text",
+                  text: "The field emerged in the late 1960s in response to the software crisis—a period marked by projects that were over budget, behind schedule, and riddled with defects. Since then, software engineering has evolved into a rich discipline with established practices for requirements analysis, system design, implementation, testing, and maintenance.",
+                },
+              ],
+            },
+            {
+              type: "heading",
+              attrs: { level: 2 },
+              content: [{ type: "text", text: "1.2 The Software Process" }],
+            },
+            {
+              type: "paragraph",
+              content: [
+                {
+                  type: "text",
+                  text: "A software process is a structured set of activities required to develop a software system. There are many different software processes, but all must include four fundamental activities: software specification, software development, software validation, and software evolution. These activities are organized differently in different development processes.",
+                },
+              ],
             },
           ],
         },
@@ -84,15 +117,21 @@ export const useBookStore = create<BookState>()(
         })),
 
       addChapter: () => {
+        const chapterNum = get().book.chapters.length + 1;
         const newChapter: Chapter = {
           id: uuidv4(),
-          title: `Chapter ${get().book.chapters.length + 1}`,
+          title: `Chapter ${chapterNum}`,
           content: {
             type: "doc",
             content: [
               {
+                type: "heading",
+                attrs: { level: 2 },
+                content: [{ type: "text", text: `${chapterNum}.1 Section Title` }],
+              },
+              {
                 type: "paragraph",
-                content: [{ type: "text", text: "" }],
+                content: [{ type: "text", text: "Start writing here..." }],
               },
             ],
           },

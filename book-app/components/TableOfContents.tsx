@@ -1,15 +1,10 @@
 "use client";
 
 import React from "react";
-import { BookSettings, ThemeMode } from "@/types";
-
-const THEME_STYLES: Record<ThemeMode, { text: string; muted: string; dotColor: string }> = {
-  light: { text: "#1a1a1a", muted: "#666666", dotColor: "#ccc" },
-  sepia: { text: "#2c2416", muted: "#8a7f6e", dotColor: "#c4b9a8" },
-  dark: { text: "#d4d4d4", muted: "#888888", dotColor: "#444" },
-};
+import { BookSettings } from "@/types";
 
 export interface TocEntry {
+  chapterNumber: number;
   title: string;
   page: number;
 }
@@ -21,35 +16,29 @@ export default function TableOfContents({
   entries: TocEntry[];
   settings: BookSettings;
 }) {
-  const theme = THEME_STYLES[settings.theme];
-
   return (
-    <div className="h-full flex flex-col" style={{ fontFamily: settings.fontFamily }}>
+    <div
+      className="h-full flex flex-col"
+      style={{ fontFamily: `"${settings.fontFamily}", Georgia, serif` }}
+    >
       <h2
-        className="text-center font-bold tracking-wider uppercase mb-6"
-        style={{ fontSize: "1.3em", color: theme.text }}
+        className="text-center font-bold tracking-[0.2em] uppercase mb-8"
+        style={{ fontSize: "1.3em", color: "#1a1a1a" }}
       >
         Contents
       </h2>
-      <div className="space-y-2">
+
+      <div className="space-y-1.5">
         {entries.map((entry, i) => (
-          <div key={i} className="flex items-end gap-1">
-            <span
-              className="shrink-0 font-medium"
-              style={{ fontSize: "0.9em", color: theme.text }}
-            >
-              {entry.title}
+          <div key={i} className="toc-entry" style={{ fontSize: "0.95em" }}>
+            <span className="toc-title" style={{ color: "#1a1a1a" }}>
+              Chapter {entry.chapterNumber}
+              <span className="font-normal ml-2" style={{ color: "#333" }}>
+                {entry.title}
+              </span>
             </span>
-            <span
-              className="flex-1 border-b border-dotted mx-1 mb-1"
-              style={{ borderColor: theme.dotColor }}
-            />
-            <span
-              className="shrink-0 tabular-nums"
-              style={{ fontSize: "0.85em", color: theme.muted }}
-            >
-              {entry.page}
-            </span>
+            <span className="toc-dots" />
+            <span className="toc-page">{entry.page}</span>
           </div>
         ))}
       </div>

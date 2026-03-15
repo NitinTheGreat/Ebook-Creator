@@ -25,6 +25,7 @@ import {
   Undo2,
   Redo2,
   Pilcrow,
+  Code,
 } from "lucide-react";
 
 function ToolbarButton({
@@ -61,19 +62,23 @@ function Divider() {
 export default function ChapterEditor() {
   const { book, activeChapterId, updateChapterContent } = useBookStore();
   const activeChapter = book.chapters.find((c) => c.id === activeChapterId);
+  const chapterIndex = book.chapters
+    .sort((a, b) => a.order - b.order)
+    .findIndex((c) => c.id === activeChapterId);
 
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
+        codeBlock: {},
       }),
       Underline,
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
       Placeholder.configure({
-        placeholder: "Start writing or paste your AI-generated content here...",
+        placeholder: "Paste your AI-generated content here or start writing...",
       }),
     ],
     content: activeChapter?.content ?? { type: "doc", content: [] },
@@ -83,14 +88,13 @@ export default function ChapterEditor() {
           "prose prose-invert prose-sm sm:prose-base max-w-none focus:outline-none min-h-[500px] px-8 py-6",
       },
     },
-    onUpdate: ({ editor }) => {
+    onUpdate: ({ editor: ed }) => {
       if (activeChapterId) {
-        updateChapterContent(activeChapterId, editor.getJSON());
+        updateChapterContent(activeChapterId, ed.getJSON());
       }
     },
   });
 
-  // Sync editor content when switching chapters
   const setContent = useCallback(() => {
     if (editor && activeChapter) {
       const currentJSON = JSON.stringify(editor.getJSON());
@@ -109,7 +113,9 @@ export default function ChapterEditor() {
     return (
       <div className="flex-1 flex items-center justify-center text-zinc-600">
         <div className="text-center">
-          <BookIcon />
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="mx-auto text-zinc-700">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+          </svg>
           <p className="mt-4 text-lg font-medium">Select a chapter to start editing</p>
           <p className="text-sm text-zinc-700 mt-1">
             Choose from the sidebar or add a new chapter
@@ -127,138 +133,76 @@ export default function ChapterEditor() {
     <div className="flex-1 flex flex-col min-w-0">
       {/* Toolbar */}
       <div className="sticky top-0 z-10 bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-800/80 px-4 py-2 flex items-center gap-0.5 flex-wrap">
-        <ToolbarButton
-          active={editor.isActive("bold")}
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          title="Bold"
-        >
+        <ToolbarButton active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()} title="Bold">
           <Bold size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive("italic")}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          title="Italic"
-        >
+        <ToolbarButton active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()} title="Italic">
           <Italic size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive("underline")}
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          title="Underline"
-        >
+        <ToolbarButton active={editor.isActive("underline")} onClick={() => editor.chain().focus().toggleUnderline().run()} title="Underline">
           <UnderlineIcon size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive("strike")}
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          title="Strikethrough"
-        >
+        <ToolbarButton active={editor.isActive("strike")} onClick={() => editor.chain().focus().toggleStrike().run()} title="Strikethrough">
           <Strikethrough size={iconSize} />
         </ToolbarButton>
 
         <Divider />
 
-        <ToolbarButton
-          active={editor.isActive("heading", { level: 1 })}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          title="Heading 1"
-        >
+        <ToolbarButton active={editor.isActive("heading", { level: 1 })} onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} title="Heading 1">
           <Heading1 size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive("heading", { level: 2 })}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          title="Heading 2"
-        >
+        <ToolbarButton active={editor.isActive("heading", { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} title="Heading 2">
           <Heading2 size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive("heading", { level: 3 })}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          title="Heading 3"
-        >
+        <ToolbarButton active={editor.isActive("heading", { level: 3 })} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} title="Heading 3">
           <Heading3 size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive("paragraph")}
-          onClick={() => editor.chain().focus().setParagraph().run()}
-          title="Paragraph"
-        >
+        <ToolbarButton active={editor.isActive("paragraph")} onClick={() => editor.chain().focus().setParagraph().run()} title="Paragraph">
           <Pilcrow size={iconSize} />
         </ToolbarButton>
 
         <Divider />
 
-        <ToolbarButton
-          active={editor.isActive("bulletList")}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          title="Bullet List"
-        >
+        <ToolbarButton active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()} title="Bullet List">
           <List size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive("orderedList")}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          title="Ordered List"
-        >
+        <ToolbarButton active={editor.isActive("orderedList")} onClick={() => editor.chain().focus().toggleOrderedList().run()} title="Ordered List">
           <ListOrdered size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive("blockquote")}
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          title="Blockquote"
-        >
+        <ToolbarButton active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()} title="Blockquote">
           <Quote size={iconSize} />
+        </ToolbarButton>
+        <ToolbarButton active={editor.isActive("codeBlock")} onClick={() => editor.chain().focus().toggleCodeBlock().run()} title="Code Block">
+          <Code size={iconSize} />
         </ToolbarButton>
 
         <Divider />
 
-        <ToolbarButton
-          active={editor.isActive({ textAlign: "left" })}
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          title="Align Left"
-        >
+        <ToolbarButton active={editor.isActive({ textAlign: "left" })} onClick={() => editor.chain().focus().setTextAlign("left").run()} title="Align Left">
           <AlignLeft size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive({ textAlign: "center" })}
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          title="Align Center"
-        >
+        <ToolbarButton active={editor.isActive({ textAlign: "center" })} onClick={() => editor.chain().focus().setTextAlign("center").run()} title="Align Center">
           <AlignCenter size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive({ textAlign: "right" })}
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          title="Align Right"
-        >
+        <ToolbarButton active={editor.isActive({ textAlign: "right" })} onClick={() => editor.chain().focus().setTextAlign("right").run()} title="Align Right">
           <AlignRight size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          active={editor.isActive({ textAlign: "justify" })}
-          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-          title="Justify"
-        >
+        <ToolbarButton active={editor.isActive({ textAlign: "justify" })} onClick={() => editor.chain().focus().setTextAlign("justify").run()} title="Justify">
           <AlignJustify size={iconSize} />
         </ToolbarButton>
 
         <Divider />
 
-        <ToolbarButton
-          onClick={() => editor.chain().focus().undo().run()}
-          title="Undo"
-        >
+        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} title="Undo">
           <Undo2 size={iconSize} />
         </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().redo().run()}
-          title="Redo"
-        >
+        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} title="Redo">
           <Redo2 size={iconSize} />
         </ToolbarButton>
 
-        {/* Chapter title display */}
-        <div className="ml-auto text-sm text-zinc-500 font-medium truncate max-w-[200px]">
+        {/* Chapter info */}
+        <div className="ml-auto text-sm text-zinc-500 font-medium truncate max-w-[250px]">
+          <span className="text-zinc-600 mr-1">Ch. {chapterIndex + 1} —</span>
           {activeChapter.title}
         </div>
       </div>
@@ -270,13 +214,5 @@ export default function ChapterEditor() {
         </div>
       </div>
     </div>
-  );
-}
-
-function BookIcon() {
-  return (
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="mx-auto text-zinc-700">
-      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-    </svg>
   );
 }

@@ -1,13 +1,7 @@
 "use client";
 
 import React from "react";
-import { BookSettings, ThemeMode } from "@/types";
-
-const THEME_STYLES: Record<ThemeMode, { text: string; muted: string }> = {
-  light: { text: "#1a1a1a", muted: "#666666" },
-  sepia: { text: "#2c2416", muted: "#8a7f6e" },
-  dark: { text: "#d4d4d4", muted: "#888888" },
-};
+import { BookSettings } from "@/types";
 
 export default function TitlePage({
   title,
@@ -20,20 +14,21 @@ export default function TitlePage({
   subtitle: string;
   settings: BookSettings;
 }) {
-  const theme = THEME_STYLES[settings.theme];
-
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center px-4">
-      {/* Decorative line */}
-      <div className="w-16 h-px mb-8" style={{ backgroundColor: theme.muted }} />
+    <div
+      className="flex flex-col items-center justify-center h-full text-center px-6"
+      style={{ fontFamily: `"${settings.fontFamily}", Georgia, serif` }}
+    >
+      {/* Top decorative rule */}
+      <div className="w-24 h-[2px] bg-zinc-800 mb-12" />
 
       {/* Title */}
       <h1
-        className="font-bold tracking-tight leading-tight"
+        className="font-bold tracking-tight leading-[1.15]"
         style={{
-          fontSize: "2em",
-          color: theme.text,
-          fontFamily: settings.fontFamily,
+          fontSize: "2.2em",
+          color: "#1a1a1a",
+          letterSpacing: "0.02em",
         }}
       >
         {title}
@@ -42,11 +37,11 @@ export default function TitlePage({
       {/* Subtitle */}
       {subtitle && (
         <p
-          className="mt-4 italic"
+          className="mt-3 italic"
           style={{
-            fontSize: "1.1em",
-            color: theme.muted,
-            fontFamily: settings.fontFamily,
+            fontSize: "1em",
+            color: "#555",
+            letterSpacing: "0.04em",
           }}
         >
           {subtitle}
@@ -54,19 +49,18 @@ export default function TitlePage({
       )}
 
       {/* Decorative element */}
-      <div className="flex items-center gap-2 my-8">
-        <div className="w-8 h-px" style={{ backgroundColor: theme.muted }} />
-        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: theme.muted }} />
-        <div className="w-8 h-px" style={{ backgroundColor: theme.muted }} />
+      <div className="flex items-center gap-3 my-10">
+        <div className="w-12 h-[1px] bg-zinc-400" />
+        <div className="w-2 h-2 rotate-45 border border-zinc-400" />
+        <div className="w-12 h-[1px] bg-zinc-400" />
       </div>
 
       {/* Author */}
       <p
-        className="tracking-widest uppercase"
+        className="tracking-[0.25em] uppercase font-semibold"
         style={{
-          fontSize: "0.85em",
-          color: theme.muted,
-          fontFamily: settings.fontFamily,
+          fontSize: "0.8em",
+          color: "#555",
         }}
       >
         {author}

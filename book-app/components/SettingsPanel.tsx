@@ -3,7 +3,7 @@
 import React from "react";
 import { useBookStore } from "@/store/bookStore";
 import { FONT_OPTIONS, PAGE_SIZES, PageSize, ThemeMode } from "@/types";
-import { Settings, Type, Ruler, Palette, BookMarked } from "lucide-react";
+import { Settings, Type, Ruler, Palette, BookMarked, Columns2 } from "lucide-react";
 
 export default function SettingsPanel() {
   const { book, updateSettings, setAuthor, setSubtitle } = useBookStore();
@@ -38,7 +38,7 @@ export default function SettingsPanel() {
         </Label>
       </Section>
 
-      {/* Page Size */}
+      {/* Page Layout */}
       <Section icon={<Ruler size={14} />} title="Page Layout">
         <Label text="Page Size">
           <select
@@ -55,7 +55,7 @@ export default function SettingsPanel() {
         </Label>
         <Label text="Margins (pt)">
           <div className="grid grid-cols-2 gap-2">
-            {(["top", "bottom", "left", "right"] as const).map((side) => (
+            {(["top", "bottom", "inner", "outer"] as const).map((side) => (
               <div key={side}>
                 <span className="text-[10px] text-zinc-600 uppercase">{side}</span>
                 <input
@@ -74,6 +74,37 @@ export default function SettingsPanel() {
             ))}
           </div>
         </Label>
+      </Section>
+
+      {/* Columns */}
+      <Section icon={<Columns2 size={14} />} title="Columns">
+        <div className="flex gap-2">
+          {([1, 2] as const).map((cols) => (
+            <button
+              key={cols}
+              className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all border ${
+                settings.columnCount === cols
+                  ? "border-indigo-500 bg-indigo-500/15 text-indigo-300"
+                  : "border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300"
+              }`}
+              onClick={() => updateSettings({ columnCount: cols })}
+            >
+              {cols} Column{cols > 1 ? "s" : ""}
+            </button>
+          ))}
+        </div>
+        {settings.columnCount === 2 && (
+          <Label text={`Column Gap: ${settings.columnGap}px`}>
+            <input
+              type="range"
+              className="w-full accent-indigo-500"
+              min={16}
+              max={40}
+              value={settings.columnGap}
+              onChange={(e) => updateSettings({ columnGap: Number(e.target.value) })}
+            />
+          </Label>
+        )}
       </Section>
 
       {/* Typography */}
@@ -96,7 +127,7 @@ export default function SettingsPanel() {
             type="range"
             className="w-full accent-indigo-500"
             min={9}
-            max={18}
+            max={14}
             value={settings.fontSize}
             onChange={(e) => updateSettings({ fontSize: Number(e.target.value) })}
           />
@@ -106,8 +137,8 @@ export default function SettingsPanel() {
             type="range"
             className="w-full accent-indigo-500"
             min={1.2}
-            max={2.2}
-            step={0.1}
+            max={2.0}
+            step={0.05}
             value={settings.lineHeight}
             onChange={(e) => updateSettings({ lineHeight: Number(e.target.value) })}
           />

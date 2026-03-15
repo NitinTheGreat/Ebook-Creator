@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0c0c0f;
+  --foreground: #e4e4e7;
+  --surface: #18181b;
+  --surface-hover: #27272a;
+  --border: #27272a;
+  --muted: #71717a;
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
 }
 
 @theme inline {
@@ -12,15 +18,181 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Global styles */
+* {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  overflow: hidden;
+}
+
+/* Scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Input field */
+.input-field {
+  width: 100%;
+  padding: 6px 10px;
+  background: #1e1e22;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #e4e4e7;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input-field:focus {
+  border-color: #6366f1;
+}
+
+/* Tiptap editor prose styles */
+.tiptap {
+  outline: none;
+  min-height: 500px;
+  padding: 32px;
+}
+
+.tiptap p {
+  margin-bottom: 0.75em;
+  line-height: 1.7;
+}
+
+.tiptap h1 {
+  font-size: 1.75em;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  margin-top: 1em;
+  color: #f4f4f5;
+}
+
+.tiptap h2 {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-bottom: 0.45em;
+  margin-top: 0.9em;
+  color: #e4e4e7;
+}
+
+.tiptap h3 {
+  font-size: 1.15em;
+  font-weight: 600;
+  margin-bottom: 0.4em;
+  margin-top: 0.8em;
+  color: #d4d4d8;
+}
+
+.tiptap ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.tiptap li {
+  margin-bottom: 0.25em;
+  line-height: 1.6;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid #6366f1;
+  padding-left: 1em;
+  margin: 0.75em 0;
+  color: #a1a1aa;
+  font-style: italic;
+}
+
+.tiptap code {
+  background: #27272a;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: var(--font-mono, monospace);
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #52525b;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Chapter content in preview */
+.chapter-content p {
+  margin-bottom: 0.65em;
+}
+.chapter-content h1 {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  margin-top: 0.8em;
+}
+.chapter-content h2 {
+  font-size: 1.3em;
+  font-weight: 600;
+  margin-bottom: 0.45em;
+  margin-top: 0.7em;
+}
+.chapter-content h3 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 0.4em;
+  margin-top: 0.6em;
+}
+.chapter-content blockquote {
+  border-left: 2px solid #888;
+  padding-left: 0.8em;
+  font-style: italic;
+  opacity: 0.8;
+  margin: 0.5em 0;
+}
+.chapter-content ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+.chapter-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+.chapter-content li {
+  margin-bottom: 0.2em;
+}
+
+/* Page transition animations */
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.page-enter {
+  animation: pageSlideIn 0.3s ease-out;
 }

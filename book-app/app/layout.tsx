@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ebook Creator — AI-Powered Book Builder",
+  title: "Ebook Creator",
   description:
-    "Transform AI-generated content into professionally formatted ebooks. Create chapters, preview layouts, and export publication-ready PDFs.",
+    "by the great",
 };
 
 export default function RootLayout({
